@@ -1,4 +1,7 @@
 data "aws_caller_identity" "current" {}
+data "aws_iam_role" "github_actions" {
+  name = "gitbubaction-ecr-role"
+}
 module "vpc" {
   source                = "../../modules/vpc"
   environment           = var.environment
@@ -24,9 +27,10 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnet_ids
-
+   
   endpoint_public_access  = true
   enable_cluster_creator_admin_permissions = true
+
   addons = {
     coredns                = {}
     eks-pod-identity-agent = {
@@ -47,7 +51,23 @@ module "eks" {
     vpc-cni                = {
       before_compute = true
     }
+  
   }
+    access_entries = {
+     github_actions = {
+      principal_arn = data.aws_iam_role.github_actions.arn
+
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+          access_scope = {
+          type = "cluster"
+        }
+      }
+    }
+  }
+}
   eks_managed_node_groups = {
     application = {
       name = "${var.cluster_name}-nodes"
