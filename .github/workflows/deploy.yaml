@@ -9,7 +9,7 @@ permissions:
 env:
   ECR: ${{ secrets.ECR }}
   SERVICE: flask
-  DB_HOST: ${{ secrets.DB_HOST }} 
+  DB_HOST: ${{ vars.DB_HOST }} 
 jobs:
  build:
    name: Building docker image
@@ -32,7 +32,7 @@ jobs:
         docker build  -t $ECR/$SERVICE:$TAG .
         docker push $ECR/$SERVICE:$TAG
         echo "image=$ECR/$SERVICE:$TAG" >> "$GITHUB_OUTPUT" 
-    - name: Scan image (Trivy)          # ← theirs, kept
+    - name: Scan image (Trivy)          
       uses: aquasecurity/trivy-action@v0.36.0
       with:
         image-ref: ${{ steps.build.outputs.image }}
