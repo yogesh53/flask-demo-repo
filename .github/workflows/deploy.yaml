@@ -7,7 +7,7 @@ permissions:
   contents: read
   id-token: write
 env:
-  ECR: ${{ env.ECR }}
+  ECR: ${{ secrets.ECR }}
   SERVICE: ${{ env.SERVICE}}
 jobs:
  build:
