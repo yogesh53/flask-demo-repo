@@ -5,4 +5,16 @@ ingress:
      alb.ingress.kubernetes.io/scheme: internet-facing
      alb.ingress.kubernetes.io/target-type: ip
      alb.ingress.kubernetes.io/healthcheck-path: /health
+namespace: uat
+
+externalSecret:
+  enabled: true
+  secretStore:
+    name: aws-secretsmanager
+    kind: ClusterSecretStore
+
+  target:
+    name: flask-secrets
+
+  remoteKey: rds!db-e435a13f-a48e-43fb-8da8-f1872d8d8938
 

@@ -81,7 +81,7 @@ jobs:
  prod-deploy:
    name: Deploying to uat env
    runs-on: ubuntu-latest
-   needs: build
+   needs: uat-deploy
    environment:
     name: prod
    steps:
