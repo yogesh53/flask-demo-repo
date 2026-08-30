@@ -16,6 +16,11 @@ jobs:
    steps: 
     - name: Checkout Code
       uses: actions/checkout@v4
+    - name: Check GitHub context
+      run: |
+        echo "Repository: $GITHUB_REPOSITORY"
+        echo "Repository owner: $GITHUB_REPOSITORY_OWNER"
+        echo "Ref: $GITHUB_REF"
     - uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: arn:aws:iam::767397770552:role/gitbubaction-ecr-role
