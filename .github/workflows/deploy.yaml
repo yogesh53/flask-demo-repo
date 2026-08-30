@@ -30,7 +30,7 @@ jobs:
               | docker login --username AWS --password-stdin $ECR
         docker build  -t $ECR/$SERVICE:$TAG .
         docker push $ECR/$SERVICE:$TAG
-        #echo "image=$ECR/$SERVICE:$TAG" >> "$GITHUB_OUTPUT" 
+        echo "image=$ECR/$SERVICE:$TAG" >> "$GITHUB_OUTPUT" 
     - name: Scan image (Trivy)          # ← theirs, kept
       uses: aquasecurity/trivy-action@v0.36.0
       with:
