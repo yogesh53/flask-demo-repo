@@ -8,7 +8,8 @@ permissions:
   id-token: write
 env:
   ECR: ${{ secrets.ECR }}
-  SERVICE: flask 
+  SERVICE: flask
+  DB_HOST: ${{ secrets.DB_HOST }} 
 jobs:
  build:
    name: Building docker image
@@ -58,5 +59,5 @@ jobs:
     - name: Deploy with Helm
       run: |
         cd flask-app
-        helm upgrade --install  -f values-uat.yaml flask-app --set image.tag=${GITHUB_SHA::7} --set database.host="${{ secrets.DB_HOST }}" . -n uat --create-namespace
+        helm upgrade --install  -f values-uat.yaml flask-app --set image.tag=${GITHUB_SHA::7} --set database.host="$DB_HOST" . -n uat --create-namespace
      
