@@ -30,3 +30,4 @@ jobs:
         docker build  -t $ECR/$SERVICE:$TAG .
         docker push $ECR/$SERVICE:$TAG
         echo "image=$ECR/$SERVICE:$TAG" >> "$GITHUB_OUTPUT" 
+        
