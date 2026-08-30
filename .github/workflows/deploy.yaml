@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v4
     - uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-to-assume: ${{ vars.AWS_ROLE_ARN }}
         aws-region: ${{ vars.AWS_REGION }}
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -30,4 +30,3 @@ jobs:
         docker build  -t $ECR/$SERVICE:$TAG .
         docker push $ECR/$SERVICE:$TAG
         echo "image=$ECR/$SERVICE:$TAG" >> "$GITHUB_OUTPUT" 
-        
