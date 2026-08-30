@@ -8,7 +8,7 @@ permissions:
   id-token: write
 env:
   ECR: ${{ secrets.ECR }}
-  SERVICE: flask
+  SERVICE: flask 
 jobs:
  build:
    name: Building docker image
@@ -19,7 +19,7 @@ jobs:
     - uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: ${{ vars.AWS_REGION }}
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Build Docker image
