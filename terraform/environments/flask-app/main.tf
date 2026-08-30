@@ -32,6 +32,17 @@ module "eks" {
     eks-pod-identity-agent = {
       before_compute = true
     }
+    amazon-cloudwatch-observability = {
+      before_compute = true
+
+      pod_identity_association = [
+        {
+         role_arn        = aws_iam_role.cloudwatch_addon.arn
+        service_account = "cloudwatch-agent"
+    }
+      ]
+  }
+
     kube-proxy             = {}
     vpc-cni                = {
       before_compute = true
