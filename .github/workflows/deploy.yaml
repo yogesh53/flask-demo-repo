@@ -57,5 +57,6 @@ jobs:
           --name ${{ vars.CLUSTER }} 
     - name: Deploy with Helm
       run: |
+        cd flask-app
         helm upgrade --install  -f values-uat.yaml flask-app --set image.tag=${GITHUB_SHA::7} --set database.host=${{ secrets.DB_HOST }} . -n uat --create-namespace
      
