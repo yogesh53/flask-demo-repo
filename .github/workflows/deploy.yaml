@@ -8,7 +8,7 @@ permissions:
   id-token: write
 env:
   ECR: ${{ secrets.ECR }}
-  SERVICE: ${{ env.SERVICE}}
+  SERVICE: flask
 jobs:
  build:
    name: Building docker image
