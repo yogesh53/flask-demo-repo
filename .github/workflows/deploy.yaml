@@ -54,7 +54,7 @@ jobs:
       run: |
         aws eks update-kubeconfig \
           --region $AWS_REGION \
-          --name {{ vars.CLUSTER }} 
+          --name ${{ vars.CLUSTER }} 
     - name: Deploy with Helm
       run: |
         helm upgrade --install  -f values-uat.yaml flask-app --set image.tag=${GITHUB_SHA::7} --set database.host=${{ secrets.DB_HOST }} . -n uat --create-namespace
