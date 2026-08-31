@@ -16,5 +16,5 @@ externalSecret:
   target:
     name: flask-secrets
 
-  remoteKey: rds!db-e435a13f-a48e-43fb-8da8-f1872d8d8938
+  remoteKey: rds!db-64e23337-857d-4d6b-8566-72c15ddae0f3
 
