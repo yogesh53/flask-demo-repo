@@ -1,11 +1,12 @@
 ingress:
   enabled: true
-  groupName: "awc-services"
+  groupName: "uat"
   annotations: 
      alb.ingress.kubernetes.io/scheme: internet-facing
      alb.ingress.kubernetes.io/target-type: ip
      alb.ingress.kubernetes.io/healthcheck-path: /health
      alb.ingress.kubernetes.io/subnets: subnet-087e7604f6278a6be, subnet-0787ee1ddd710710d
+     alb.ingress.kubernetes.io/load-balancer-attributes: access_logs.s3.enabled=true,access_logs.s3.bucket=flask-alb-logs-demo,access_logs.s3.prefix=uat
 namespace: uat
 
 externalSecret:

@@ -113,3 +113,20 @@ module "eso"{
   environment = var.environment
   rds_secret_arn = module.rds.secret_arn
 }
+
+resource "aws_s3_bucket" "alb_logs" {
+  bucket        = "flask-alb-logs-demo"
+  force_destroy = true
+}
+resource "aws_s3_bucket_policy" "alb_logs" {
+  bucket = aws_s3_bucket.alb_logs.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "logdelivery.elasticloadbalancing.amazonaws.com" }
+      Action    = "s3:PutObject"
+      Resource  = "arn:aws:s3:::flask-alb-logs-demo/AWSLogs/767397770552/*"
+    }]
+  })
+}
