@@ -1,7 +1,4 @@
-output "aws_account_id" {
-  description = "AWS ACCOUNT ID"
-  value       = data.aws_caller_identity.current.account_id
-}
+
 output "alb_security_group_id" {
   value = module.security_groups.alb_security_group_id
 }
@@ -25,4 +22,7 @@ output "port"{
 }
 output "repository_url"{
   value = module.ecr.repository_url
+}
+output "cluster_name"{
+  value = module.eks.cluster_name
 }
