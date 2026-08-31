@@ -39,7 +39,7 @@ aws eks update-kubeconfig --region <aws-region-code>--name <cluster-name>
 
 kubectl get nodes
 
-Step 7: Install AWS Load Balancer Controller with Helm
+Step 7: Install AWS Load Balancer Controller  and External Secret Operator with Helm
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.14.1/docs/install/iam_policy.json
 aws iam create-policy \
 --policy-name AWSLoadBalancerControllerIAMPolicy \
@@ -63,13 +63,17 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set serviceAccount.name=aws-load-balancer-controller \
   --version 1.14.0  --set region=<aws-region-code> --set vpcId=vpc-xxxxxxxx
 
+
+
 Replace <cluster-name>, <aws-region-code>, vpc-xxxxxxxx, <AWS_ACCOUNT_ID> with actual values
 
 Step 8: Setup the external secret operator for secret management 
 
 Since I have already setup pod identity association for secret to access the secret manager we can now proceed with installing the operator
+helm  upgrade --install external-secrets   external-secrets/external-secrets   -n external-secrets   --create-namespace
 cd k8s
 kubectl apply -f clustersecretstore.yaml
+
 Step 9: Deploy the Application
 
 Im using github actions for ci/cd , in order for deploying the application through ci/cd , we need to add some varibales and secrets in repository settings .
@@ -146,10 +150,12 @@ And eks policy
         }
     ]
 }
+
+
 I have used these inline policies which are required to put the docker image in ecr and to describe the cluster . 
 Also for manual approval ,  since I was using free github account , I need to make the repository public, I created the environment like prod . now go to prod . In Deployment protection rules, Tick the Required reviewers , reviewers who we want to allow to review the pipeline .  After doing this pipeline will stop before prod deployment .
 
-These are the necessary steps to  deployment using ci/cd . just push the code to main branch pipeline will test the code  ,build the docker image  push the image to ecr, scan the image and deploy to uat namespace . after that it requires manual approval for deployment to prod namespace. It will create separate namespace for prod application . 
+These are the necessary steps to  deployment using ci/cd .Also update the remote key in vaules-uat.yaml and values-prod.yaml with db secret name before running the pipeline. After this , push the code to main branch pipeline will test the code  ,build the docker image  push the image to ecr, scan the image and deploy to uat namespace . after that it requires manual approval for deployment to prod namespace. It will create separate namespace for prod application . 
 we can test the application using alb dns of both uat and prod  envs.
 
 Step 10: Monitoring and logging setup :
@@ -158,23 +164,23 @@ helm install monitoring prometheus-community/kube-prometheus-stack \ -n monitori
  For logging I have used amazon-cloudwatch-observability  addon for logging  which is already installed through terraform . 
 
 3. Architecture Decisions
-Terraform for Infrastructure
+''Terraform for Infrastructure''
 Terraform was selected to manage AWS infrastructure as code. It provides version control, reviewable plans, repeatable deployments and reduces manual configuration.
-Amazon EKS for Kubernetes
+''Amazon EKS for Kubernetes''
 EKS was selected to run the Flask application because it provides a managed Kubernetes control plane, AWS integration, Kubernetes scaling capabilities and reduced control-plane operational overhead.
-Amazon RDS PostgreSQL
+''Amazon RDS PostgreSQL''
 RDS PostgreSQL is used as the application database because it is managed by AWS, supports maintenance and backups, and keeps the database separate from application workloads.
-Amazon ECR for Container Images
+''Amazon ECR for Container Images''
 ECR stores Docker images and integrates with EKS and GitHub Actions while providing AWS-native image lifecycle capabilities.
-Helm for Application Deployment
+''Helm for Application Deployment''
 Helm packages the application and allows the same chart to be reused across UAT and PROD using environment-specific values files.
-GitHub Actions for CI/CD
+''GitHub Actions for CI/CD''
 GitHub Actions automates pull-request testing, image building, ECR publishing and deployment, with manual approval before deployment to production.
-AWS OIDC for GitHub Authentication
+''AWS OIDC for GitHub Authentication''
 GitHub Actions assumes an IAM role through OIDC instead of using long-lived AWS access keys. This reduces credential exposure risk.
-External Secrets Operator for Secret Management
+''External Secrets Operator for Secret Management''
 Secrets are stored in AWS Secrets Manager and synchronized into Kubernetes. This keeps database credentials out of Git and allows separate UAT and PROD secrets.
-CloudWatch for Monitoring and Logging
+''CloudWatch for Monitoring and Logging''
 CloudWatch provides centralized AWS monitoring and logging and helps with infrastructure and application troubleshooting.
 3. Architecture
 The overall flow is:
